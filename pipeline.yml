@@ -1,4 +1,10 @@
 ---
+resource_types:
+  - name: http-api
+    type: docker-image
+    source:
+      repository: aequitas/http-api-resource
+      tag: latest
 
 resources:
   - name: git-repository
@@ -6,6 +12,13 @@ resources:
     source:
       uri: https://github.com/Godfather27/concourse-testapp.git
       branch: master
+  - name: slack
+    type: http-api
+    source:
+      uri: https://hooks.slack.com/services/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
+      method: POST
+      json:
+        text: "deployed"
 
 jobs:
   - name: lint
@@ -18,7 +31,7 @@ jobs:
 
           image_resource:
             type: docker-image
-            source: {repository: ruby, tag: '2.5'}
+            source: { repository: ruby, tag: '2.5' }
 
           inputs:
             - name: git-repository
@@ -38,7 +51,7 @@ jobs:
 
           image_resource:
             type: docker-image
-            source: {repository: ruby, tag: '2.5'}
+            source: { repository: ruby, tag: '2.5' }
 
           inputs:
             - name: git-repository
@@ -58,7 +71,7 @@ jobs:
 
           image_resource:
             type: docker-image
-            source: {repository: ruby, tag: '2.5'}
+            source: { repository: ruby, tag: '2.5' }
 
           inputs:
             - name: git-repository
@@ -78,7 +91,7 @@ jobs:
 
           image_resource:
             type: docker-image
-            source: {repository: ruby, tag: '2.5'}
+            source: { repository: ruby, tag: '2.5' }
 
           inputs:
             - name: git-repository
@@ -99,7 +112,7 @@ jobs:
 
           image_resource:
             type: docker-image
-            source: {repository: ruby, tag: '2.5'}
+            source: { repository: ruby, tag: '2.5' }
 
           inputs:
             - name: git-repository
@@ -130,3 +143,4 @@ jobs:
             path: echo
             args:
               - 'deploys the app'
+      - put: slack
