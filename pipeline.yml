@@ -5,6 +5,7 @@ resources:
     type: git
     source:
       uri: https://github.com/Godfather27/concourse-testapp.git
+      branch: master
 
 jobs:
   - name: lint
@@ -17,17 +18,15 @@ jobs:
 
           image_resource:
             type: docker-image
-            source:
-              repository: ruby
-              tag: '2.5'
+            source: {repository: ruby, tag: '2.5'}
 
           inputs:
             - name: git-repository
 
           run:
-            path: echo
-            args:
-              - 'runs rubocop for linting'
+            path: sh
+            dir: git-repository
+            args: ["./bin/rubocop.sh"]
 
   - name: unit-tests
     plan:
@@ -39,17 +38,15 @@ jobs:
 
           image_resource:
             type: docker-image
-            source:
-              repository: ruby
-              tag: '2.5'
+            source: {repository: ruby, tag: '2.5'}
 
           inputs:
             - name: git-repository
 
           run:
-            path: echo
-            args:
-              - 'runs model tests'
+            path: sh
+            dir: git-repository
+            args: ["./bin/unit-tests.sh"]
 
   - name: security-scan
     plan:
@@ -61,17 +58,15 @@ jobs:
 
           image_resource:
             type: docker-image
-            source:
-              repository: ruby
-              tag: '2.5'
+            source: {repository: ruby, tag: '2.5'}
 
           inputs:
             - name: git-repository
 
           run:
-            path: echo
-            args:
-              - 'runs brakeman for security'
+            path: sh
+            dir: git-repository
+            args: ["./bin/security-scan.sh"]
 
   - name: dependency-check
     plan:
@@ -83,17 +78,15 @@ jobs:
 
           image_resource:
             type: docker-image
-            source:
-              repository: ruby
-              tag: '2.5'
+            source: {repository: ruby, tag: '2.5'}
 
           inputs:
             - name: git-repository
 
           run:
-            path: echo
-            args:
-              - 'runs bundle-audit for dependency check'
+            path: sh
+            dir: git-repository
+            args: ["./bin/dependency-check.sh"]
 
   - name: acceptance-tests
     plan:
@@ -106,17 +99,15 @@ jobs:
 
           image_resource:
             type: docker-image
-            source:
-              repository: ruby
-              tag: '2.5'
+            source: {repository: ruby, tag: '2.5'}
 
           inputs:
             - name: git-repository
 
           run:
-            path: echo
-            args:
-              - 'runs controller tests'
+            path: sh
+            dir: git-repository
+            args: ["./bin/acceptance-tests.sh"]
 
   - name: deploy
     plan:
